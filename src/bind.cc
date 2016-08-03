@@ -63,8 +63,8 @@ void Krb5Wrap::New(const Nan::FunctionCallbackInfo<v8::Value>& info) {
   }
   else {
     // Invoked as plain function `MyObject(...)`, turn into construct call.
-    const int argc = 0;
-    v8::Local<v8::Value> argv[argc] = {};
+    const int argc = 1;
+    v8::Local<v8::Value> argv[argc] = { info[0] };
     v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
     info.GetReturnValue().Set(cons->NewInstance(argc, argv));
   }
