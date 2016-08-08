@@ -12,6 +12,9 @@ bool exists(const char* path){
 }
 
 Krb5::Krb5(){
+  this->cache=NULL;
+  this->context=NULL;
+  this->client_principal=NULL;
   this->spnego_token=NULL;
   this->err=0;
   this->err = krb5_init_secure_context(&this->context);
@@ -77,11 +80,20 @@ krb5_error_code Krb5::cleanup(int level) {
   default:
   case 0:
   case 4:
-    krb5_cc_close(this->context, this->cache);
+    if (this->cache) {
+        krb5_cc_close(this->context, this->cache);
+        this->cache = NULL;
+    }
   case 3:
-    krb5_free_principal(this->context,this->client_principal);
+    if (this->client_principal) {
+        krb5_free_principal(this->context,this->client_principal);
+        this->client_principal = NULL;
+    }
   case 2:
-    krb5_free_context(this->context);
+    if (this->context) {
+        krb5_free_context(this->context);
+        this->context = NULL;
+    }
   case 1:
     break;
   }
